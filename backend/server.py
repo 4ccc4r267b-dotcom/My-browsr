@@ -286,6 +286,9 @@ class AnnouncementCreate(BaseModel):
 class CommentCreate(BaseModel):
     content: str
 
+class CheckinRequest(BaseModel):
+    code: str
+
 class ApproveUser(BaseModel):
     approved: bool = True
     role: Optional[Role] = None
@@ -342,9 +345,15 @@ async def verify_otp(body: VerifyOTP, response: Response):
         exp = now - timedelta(minutes=1)
     if exp < now:
         raise HTTPException(400, "انتهت صلاحية الرمز")
+    user = await db.users.find_one({"email": email}, {"_id": 0})
+    if not user and body.name:
+        # New signup — name must be unique (check BEFORE consuming the OTP)
+        clean_name = body.name.strip()
+        if await db.users.find_one({"name": clean_name}):
+            raise HTTPException(400, "هذا الاسم مسجل مسبقاً — اختاري اسماً آخر")
+
     await db.otp_codes.update_one({"_id": otp["_id"]}, {"$set": {"used": True}})
 
-    user = await db.users.find_one({"email": email}, {"_id": 0})
     if not user:
         # New signup
         requested_role = body.role if body.role in SIGNUP_ROLES else "student"
@@ -382,6 +391,11 @@ async def me(user=Depends(get_current_user)):
 @api.put("/auth/me")
 async def update_me(body: UpdateProfile, user=Depends(get_current_user)):
     updates = {k: v for k, v in body.model_dump().items() if v is not None}
+    if "name" in updates:
+        new_name = updates["name"].strip()
+        if await db.users.find_one({"name": new_name, "id": {"$ne": user["id"]}}):
+            raise HTTPException(400, "هذا الاسم مسجل مسبقاً — اختاري اسماً آخر")
+        updates["name"] = new_name
     if updates:
         await db.users.update_one({"id": user["id"]}, {"$set": updates})
     return await db.users.find_one({"id": user["id"]}, {"_id": 0})
@@ -395,12 +409,13 @@ async def list_events(category: Optional[str] = None, upcoming: Optional[bool] =
     events = await db.events.find(q, {"_id": 0}).sort("date", 1).to_list(500)
     # Add registration count
     for ev in events:
+        ev.pop("checkin_code", None)
         ev["registered_count"] = await db.event_registrations.count_documents({"event_id": ev["id"]})
     return events
 
 @api.post("/events")
 async def create_event(body: EventCreate, user=Depends(require_role(*CLUB_MANAGERS))):
-    ev = {"id": str(uuid.uuid4()), **body.model_dump(),
+    ev = {"id": str(uuid.uuid4()), "checkin_code": uuid.uuid4().hex[:12], **body.model_dump(),
           "created_by": user["id"], "created_by_name": user["name"],
           "created_at": now_iso()}
     await db.events.insert_one(dict(ev))
@@ -412,6 +427,7 @@ async def get_event(event_id: str):
     ev = await db.events.find_one({"id": event_id}, {"_id": 0})
     if not ev:
         raise HTTPException(404, "Event not found")
+    ev.pop("checkin_code", None)
     ev["registered_count"] = await db.event_registrations.count_documents({"event_id": event_id})
     return ev
 
@@ -462,6 +478,40 @@ async def mark_attend(event_id: str, user_id: str, user=Depends(require_role(*CL
 async def event_attendees(event_id: str, user=Depends(require_role(*CLUB_MANAGERS))):
     regs = await db.event_registrations.find({"event_id": event_id}, {"_id": 0}).to_list(500)
     return regs
+
+@api.get("/events/{event_id}/qrcode")
+async def event_qrcode(event_id: str, user=Depends(require_role(*CLUB_MANAGERS))):
+    ev = await db.events.find_one({"id": event_id}, {"_id": 0, "checkin_code": 1, "title": 1})
+    if not ev:
+        raise HTTPException(404, "Event not found")
+    return ev
+
+@api.post("/events/checkin")
+async def event_checkin(body: CheckinRequest, user=Depends(get_current_user)):
+    code = body.code.strip().split("?")[0].rstrip("/").split("/")[-1]
+    ev = await db.events.find_one({"checkin_code": code})
+    if not ev:
+        raise HTTPException(404, "رمز QR غير صالح — تأكدي من رمز الفعالية")
+    reg = await db.event_registrations.find_one({"event_id": ev["id"], "user_id": user["id"]})
+    if reg and reg.get("attended"):
+        return {"status": "already", "title": ev["title"]}
+    if not reg:
+        count = await db.event_registrations.count_documents({"event_id": ev["id"]})
+        if count >= ev.get("capacity", 0):
+            raise HTTPException(400, "المقاعد ممتلئة")
+        await db.event_registrations.insert_one({
+            "id": str(uuid.uuid4()), "event_id": ev["id"], "user_id": user["id"],
+            "user_name": user["name"], "attended": True, "attended_at": now_iso(),
+            "created_at": now_iso()})
+    else:
+        await db.event_registrations.update_one({"_id": reg["_id"]},
+            {"$set": {"attended": True, "attended_at": now_iso()}})
+    pts = ev.get("points", 100)
+    await db.users.update_one({"id": user["id"]}, {"$inc": {"points": pts}})
+    await db.achievements.insert_one({
+        "id": str(uuid.uuid4()), "user_id": user["id"], "type": "event_attendance",
+        "title": f"حضور {ev.get('title', 'فعالية')}", "points": pts, "created_at": now_iso()})
+    return {"status": "ok", "title": ev["title"], "points_awarded": pts}
 
 # ---------------- Workshops ----------------
 @api.get("/workshops")
@@ -681,6 +731,10 @@ async def seed():
     await db.events.create_index("date")
     await db.event_registrations.create_index([("event_id", 1), ("user_id", 1)], unique=True)
     await db.workshop_registrations.create_index([("workshop_id", 1), ("user_id", 1)], unique=True)
+    try:
+        await db.users.create_index("name", unique=True)
+    except Exception as e:
+        logger.warning(f"name unique index skipped: {e}")
 
     # Seed admin
     if not await db.users.find_one({"email": ADMIN_EMAIL}):

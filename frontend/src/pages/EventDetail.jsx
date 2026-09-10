@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ArrowRight, Calendar, MapPin, Users, Trash2, CheckCircle2 } from "lucide-react";
 import { canManageClub } from "@/lib/roles";
+import { QRCodeCanvas } from "qrcode.react";
 
 export default function EventDetail() {
   const { id } = useParams();
@@ -19,6 +20,7 @@ export default function EventDetail() {
   const [registered, setRegistered] = useState(false);
   const [comments, setComments] = useState([]);
   const [text, setText] = useState("");
+  const [qrCode, setQrCode] = useState(null);
 
   const canManage = canManageClub(user?.role);
 
@@ -33,6 +35,7 @@ export default function EventDetail() {
         const { data: att } = await api.get(`/events/${id}/attendees`);
         setAttendees(att);
         setRegistered(att.some(a => a.user_id === user.id));
+        api.get(`/events/${id}/qrcode`).then(r => setQrCode(r.data.checkin_code)).catch(() => {});
       } else {
         // Check my events
         const { data: mine } = await api.get("/me/events");
@@ -122,6 +125,14 @@ export default function EventDetail() {
                 <Button data-testid="event-delete-btn" onClick={remove} variant="outline" className="w-full mt-2 rounded-full text-[#B91C1C]">
                   <Trash2 className="w-4 h-4 ml-1" /> حذف الفعالية
                 </Button>
+              )}
+              {canManage && qrCode && (
+                <div className="mt-3 pt-3 border-t border-[#EAF0F4] text-center" data-testid="event-qr-box">
+                  <div className="text-xs text-[#6B7B88] mb-2">رمز دخول الفعالية — اعرضيه للحاضرات ليمسحنه بالكاميرا</div>
+                  <div className="bg-white p-3 inline-block rounded-xl border border-[#DFE8EE]">
+                    <QRCodeCanvas value={qrCode} size={150} />
+                  </div>
+                </div>
               )}
             </div>
           </div>

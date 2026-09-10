@@ -5,7 +5,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Calendar, GraduationCap, Trophy, Megaphone, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar, GraduationCap, Trophy, Megaphone, ArrowLeft, Camera, ScanLine } from "lucide-react";
+import QrScannerDialog from "@/components/QrScannerDialog";
 
 function levelInfo(p) {
   if (p >= 601) return { name: "مصباح ذهبي", next: null, min: 601, tint: "bg-[#EDF5F2] text-[#2E8378]" };
@@ -14,12 +16,13 @@ function levelInfo(p) {
 }
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, refresh } = useAuth();
   const [events, setEvents] = useState([]);
   const [myEvents, setMyEvents] = useState([]);
   const [workshops, setWorkshops] = useState([]);
   const [anns, setAnns] = useState([]);
   const [achievements, setAchievements] = useState([]);
+  const [scanOpen, setScanOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -60,6 +63,22 @@ export default function Dashboard() {
             )}
           </div>
         </div>
+      </section>
+
+      <section className="bg-white border border-[#DFE8EE] rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4" data-testid="qr-checkin-card">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-[#EDF5F2] flex items-center justify-center">
+            <ScanLine className="w-6 h-6 text-[#2E8378]" />
+          </div>
+          <div>
+            <div className="font-display text-lg font-bold">تسجيل حضور فعالية</div>
+            <div className="text-sm text-[#6B7B88]">امسحي رمز QR المعروض في القاعة لتسجيل حضوركِ واستلام نقاطكِ</div>
+          </div>
+        </div>
+        <Button data-testid="open-scanner-btn" onClick={() => setScanOpen(true)} className="bg-[#3D5A73] hover:bg-[#2E4659] text-white rounded-full">
+          <Camera className="w-4 h-4 ml-1" /> فتح الكاميرا
+        </Button>
+        <QrScannerDialog open={scanOpen} onOpenChange={setScanOpen} onSuccess={refresh} />
       </section>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
