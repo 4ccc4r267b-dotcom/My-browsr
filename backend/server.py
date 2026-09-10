@@ -242,9 +242,11 @@ Role = Literal[
 ]
 
 LEADER_ROLES = ("leader_admin", "leader_law", "leader_media", "leader_accounting")
-SIGNUP_ROLES = ("student", "supervisor", *LEADER_ROLES,
-                "deputy_admin", "deputy_law", "deputy_media", "deputy_accounting")
+DEPUTY_ROLES = ("deputy_admin", "deputy_law", "deputy_media", "deputy_accounting")
+UNIT_ROLES = LEADER_ROLES + DEPUTY_ROLES  # كل منصب يشغله شخص واحد فقط
+SIGNUP_ROLES = ("student", "supervisor", *UNIT_ROLES)
 CLUB_MANAGERS = ("admin", "supervisor", *LEADER_ROLES)
+EVENT_STAFF = ("admin", "supervisor", *LEADER_ROLES, *DEPUTY_ROLES)  # إضافة فعاليات + رؤية الحضور
 
 class RequestOTP(BaseModel):
     email: EmailStr
@@ -314,6 +316,15 @@ def clean(doc: dict) -> dict:
         doc.pop("_id")
     return doc
 
+async def _attach_roles(regs: list):
+    uids = list({r["user_id"] for r in regs})
+    if not uids:
+        return
+    users = await db.users.find({"id": {"$in": uids}}, {"_id": 0, "id": 1, "role": 1}).to_list(len(uids))
+    rmap = {u["id"]: u.get("role", "student") for u in users}
+    for r in regs:
+        r["user_role"] = rmap.get(r["user_id"], "student")
+
 # ---------------- Auth Routes ----------------
 @api.post("/auth/request-otp")
 async def request_otp(body: RequestOTP):
@@ -362,6 +373,10 @@ async def verify_otp(body: VerifyOTP, response: Response):
     if not user:
         # New signup
         requested_role = body.role if body.role in SIGNUP_ROLES else "student"
+        if requested_role in UNIT_ROLES:
+            # كل منصب قيادة/نيابة يشغله شخص واحد فقط — إذا محجوز يصير طالبة
+            if await db.users.find_one({"role": requested_role}):
+                requested_role = "student"
         uid = str(uuid.uuid4())
         # Admin auto-approve on the seeded email
         is_admin = (email == ADMIN_EMAIL)
@@ -419,7 +434,7 @@ async def list_events(category: Optional[str] = None, upcoming: Optional[bool] =
     return events
 
 @api.post("/events")
-async def create_event(body: EventCreate, user=Depends(require_role(*CLUB_MANAGERS))):
+async def create_event(body: EventCreate, user=Depends(require_role(*EVENT_STAFF))):
     ev = {"id": str(uuid.uuid4()), "checkin_code": uuid.uuid4().hex[:12], **body.model_dump(),
           "created_by": user["id"], "created_by_name": user["name"],
           "created_at": now_iso()}
@@ -460,7 +475,7 @@ async def register_event(event_id: str, user=Depends(get_current_user)):
     return reg
 
 @api.post("/events/{event_id}/attend/{user_id}")
-async def mark_attend(event_id: str, user_id: str, user=Depends(require_role(*CLUB_MANAGERS))):
+async def mark_attend(event_id: str, user_id: str, user=Depends(require_role(*EVENT_STAFF))):
     reg = await db.event_registrations.find_one({"event_id": event_id, "user_id": user_id})
     if not reg:
         raise HTTPException(404, "Registration not found")
@@ -480,12 +495,13 @@ async def mark_attend(event_id: str, user_id: str, user=Depends(require_role(*CL
     return {"status": "ok", "points_awarded": pts}
 
 @api.get("/events/{event_id}/attendees")
-async def event_attendees(event_id: str, user=Depends(require_role(*CLUB_MANAGERS))):
+async def event_attendees(event_id: str, user=Depends(require_role(*EVENT_STAFF))):
     regs = await db.event_registrations.find({"event_id": event_id}, {"_id": 0}).to_list(500)
+    await _attach_roles(regs)
     return regs
 
 @api.get("/events/{event_id}/qrcode")
-async def event_qrcode(event_id: str, user=Depends(require_role(*CLUB_MANAGERS))):
+async def event_qrcode(event_id: str, user=Depends(require_role(*EVENT_STAFF))):
     ev = await db.events.find_one({"id": event_id}, {"_id": 0, "checkin_code": 1, "title": 1})
     if not ev:
         raise HTTPException(404, "Event not found")
@@ -581,7 +597,9 @@ async def workshop_attend(wid: str, user_id: str, user=Depends(require_role("sup
 
 @api.get("/workshops/{wid}/attendees")
 async def workshop_attendees(wid: str, user=Depends(require_role("supervisor", "admin"))):
-    return await db.workshop_registrations.find({"workshop_id": wid}, {"_id": 0}).to_list(500)
+    regs = await db.workshop_registrations.find({"workshop_id": wid}, {"_id": 0}).to_list(500)
+    await _attach_roles(regs)
+    return regs
 
 # ---------------- My items ----------------
 @api.get("/me/events")
@@ -636,7 +654,9 @@ async def delete_announcement(aid: str, user=Depends(require_role("admin"))):
 # ---------------- Comments ----------------
 @api.get("/comments/{target_type}/{target_id}")
 async def list_comments(target_type: str, target_id: str):
-    return await db.comments.find({"target_type": target_type, "target_id": target_id}, {"_id": 0}).sort("created_at", 1).to_list(500)
+    comments = await db.comments.find({"target_type": target_type, "target_id": target_id}, {"_id": 0}).sort("created_at", 1).to_list(500)
+    await _attach_roles(comments)
+    return comments
 
 @api.post("/comments/{target_type}/{target_id}")
 async def create_comment(target_type: str, target_id: str, body: CommentCreate, user=Depends(get_current_user)):
@@ -679,6 +699,10 @@ async def admin_approve(uid: str, body: ApproveUser, user=Depends(require_role("
 
 @api.put("/admin/users/{uid}/role")
 async def admin_role(uid: str, body: RoleUpdate, user=Depends(require_role("admin"))):
+    if body.role in UNIT_ROLES:
+        holder = await db.users.find_one({"role": body.role, "id": {"$ne": uid}})
+        if holder:
+            raise HTTPException(400, "هذا المنصب محجوز — كل وحدة لها قائدة/نائبة واحدة فقط")
     await db.users.update_one({"id": uid}, {"$set": {"role": body.role}})
     return {"status": "ok"}
 
@@ -695,6 +719,11 @@ async def leaderboard():
                               {"_id": 0, "id": 1, "name": 1, "major": 1, "points": 1, "avatar": 1}
                               ).sort("points", -1).limit(10).to_list(10)
     return top
+
+@api.get("/roles/taken")
+async def roles_taken():
+    taken = await db.users.distinct("role", {"role": {"$in": list(UNIT_ROLES)}})
+    return {"taken": taken}
 
 # ---------------- Files ----------------
 @api.post("/upload")

@@ -19,6 +19,7 @@ export default function AuthPage() {
   const [major, setMajor] = useState("");
   const [role, setRole] = useState("student");
   const [remember, setRemember] = useState(true);
+  const [takenRoles, setTakenRoles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const { refresh, user } = useAuth();
@@ -29,6 +30,11 @@ export default function AuthPage() {
     // session check never kicks the user back while entering the code.
     if (user && user.id && step === "email") nav("/dashboard", { replace: true });
   }, [user, nav, step]);
+
+  useEffect(() => {
+    // المناصب المحجوزة (قائدة/نائبة لكل وحدة) تُخفى من قائمة الاختيار
+    api.get("/roles/taken").then(r => setTakenRoles(r.data.taken || [])).catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (cooldown > 0) {
@@ -181,7 +187,7 @@ export default function AuthPage() {
                   <Select value={role} onValueChange={setRole}>
                     <SelectTrigger data-testid="auth-role-select"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {ROLE_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                      {ROLE_OPTIONS.filter(o => !takenRoles.includes(o.value)).map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>

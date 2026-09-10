@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ArrowRight, Calendar, MapPin, Users, Trash2, CheckCircle2 } from "lucide-react";
-import { canManageClub } from "@/lib/roles";
+import { canManageClub, canManageEvents, roleLabel } from "@/lib/roles";
 import { QRCodeCanvas } from "qrcode.react";
 
 export default function EventDetail() {
@@ -22,7 +22,8 @@ export default function EventDetail() {
   const [text, setText] = useState("");
   const [qrCode, setQrCode] = useState(null);
 
-  const canManage = canManageClub(user?.role);
+  const canManage = canManageEvents(user?.role);
+  const canDelete = canManageClub(user?.role);
 
   const load = async () => {
     try {
@@ -121,7 +122,7 @@ export default function EventDetail() {
                   {remaining <= 0 ? "المقاعد ممتلئة" : "سجّليني في الفعالية"}
                 </Button>
               )}
-              {canManage && (
+              {canDelete && (
                 <Button data-testid="event-delete-btn" onClick={remove} variant="outline" className="w-full mt-2 rounded-full text-[#B91C1C]">
                   <Trash2 className="w-4 h-4 ml-1" /> حذف الفعالية
                 </Button>
@@ -148,7 +149,12 @@ export default function EventDetail() {
                 <div className="flex items-center gap-3">
                   <Avatar className="w-9 h-9"><AvatarFallback className="bg-[#EAF1F6] text-[#2E4659]">{(a.user_name || "؟")[0]}</AvatarFallback></Avatar>
                   <div>
-                    <div className="text-sm font-semibold">{a.user_name}</div>
+                    <div className="text-sm font-semibold flex items-center gap-2">
+                      {a.user_name}
+                      {a.user_role && a.user_role !== "student" && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EDF5F2] text-[#2E8378]">{roleLabel(a.user_role)}</span>
+                      )}
+                    </div>
                     <div className="text-xs text-[#6B7B88]">{a.attended ? "✓ حضرت" : "لم تحضر بعد"}</div>
                   </div>
                 </div>
@@ -169,8 +175,11 @@ export default function EventDetail() {
             <div key={c.id} className="flex gap-3" data-testid={`comment-${c.id}`}>
               <Avatar className="w-9 h-9 shrink-0"><AvatarFallback className="bg-[#EDF5F2] text-[#2E8378]">{(c.user_name || "؟")[0]}</AvatarFallback></Avatar>
               <div className="flex-1 bg-[#FAFCFD] border border-[#EAF0F4] rounded-xl p-3">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-sm font-semibold">{c.user_name}</span>
+                  {c.user_role && c.user_role !== "student" && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EDF5F2] text-[#2E8378]">{roleLabel(c.user_role)}</span>
+                  )}
                   <span className="text-[11px] text-[#6B7B88]">{new Date(c.created_at).toLocaleString("ar-SA")}</span>
                 </div>
                 <div className="text-sm text-[#3A4A58] mt-1 leading-relaxed">{c.content}</div>

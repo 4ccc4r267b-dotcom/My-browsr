@@ -1,0 +1,28 @@
+{
+  "summary": "Browser-level verification of role-badges + single-occupancy + leader/deputy event permissions + admin role guard. ALL 7 requested flows PASSED end-to-end via Playwright on the public URL. (1) Signup role dropdown correctly hides 'قائدة وحدة الإدارة' (leader_admin taken by real user) while listing 'قائدة وحدة القانون', 'قائدة وحدة الإعلام', deputies, etc. (2) After registering leadermedia.test@misbah.dev as leader_media, GET /api/roles/taken returned {taken:['leader_media','leader_admin']} and the next signup's dropdown no longer offered 'قائدة وحدة الإعلام'. (3) Leader saw + clicked [data-testid=create-event-btn], created event; on event detail page [data-testid=event-qr-box] rendered a QR image and the attendees section listed the student who registered. (4) Leader's comment showed the 'قائدة وحدة الإعلام' role badge next to her name; student's comment showed the correct badge based on her current role. (5) /attendance page loaded [data-testid=attendance-page], event tile [data-testid=att-item-{id}] opened [data-testid=att-attendees-panel] listing the student with role badge; 6-second recheck confirmed panel stays populated (5s polling healthy). (6) Regression as student: no create-event-btn on /events, no event-qr-box on event detail, and GET /api/events/{id}/attendees returned 403. (7) Admin PUT /api/admin/users/{id}/role with role=leader_admin (taken) returned HTTP 400 with body 'هذا المنصب محجوز — كل وحدة لها قائدة/نائبة واحدة فقط'; setting to a free leader_* role returned 200 ok. Cleanup: mongosh deleted 3 test users, 1 event, 1 registration, 2 comments. Real admin (4ccc4r267b@) and real user (alghamdysjy1@) untouched; /api/roles/taken back to ['leader_admin'] only.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/comments/{target_type}/{target_id}", "issue": "user_role is snapshotted into the comment document at POST time (server.py:662) instead of resolved live like _attach_roles does for attendees. Consequence: if a user's role changes (e.g. admin demotes them), their old comments still display the old role badge. Attendee rows correctly update because they re-resolve on GET, but comments do not. Suggested fix: run a similar _attach_roles helper over the comments list, or drop the stored user_role and derive it on GET."}
+    ]
+  },
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": ["/app/backend/tests/test_misbah_api.py"],
+  "action_items": [
+    "(Optional/minor) Refactor list_comments to resolve user_role live from users collection (mirror _attach_roles) so role-badge on old comments stays in sync when an admin re-assigns roles."
+  ],
+  "critical_code_review_comments": [
+    "canManageEvents vs canManageClub split is clean — deputies + doctor can create events but only leaders/supervisor/admin can delete. Verified via UI: leader_media saw both create-event-btn and event-delete-btn.",
+    "Single-occupancy enforcement is tight: /api/roles/taken drives dropdown filter (AuthPage.jsx), backend downgrades late leader signups to student in verify-otp (server.py ~L376), and admin role PUT returns 400 with Arabic message. Three-layer defense — good.",
+    "5s attendance polling works and panel stays consistent across refresh cycles.",
+    "Comment role_badge stale on role change (see backend minor issue) — low-severity but worth fixing for correctness."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (all requested flows via curl + browser)", "frontend": "100% (7/7 requested flows)"},
+  "test_credentials": "Admin: 4ccc4r267b@privaterelay.appleid.com (OTP from backend logs). Test users cleaned post-run.",
+  "seed_data_creation": "None persisted. Created and deleted: dropcheck.test@misbah.dev, leadermedia.test@misbah.dev, student.test@misbah.dev + 1 event + 1 registration + 2 comments.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Passwordless OTP pattern that works: fill [data-testid=auth-email-input], click [data-testid=auth-send-otp-btn], read OTP via `tail -n 1500 /var/log/supervisor/backend.err.log | grep <email>`, click [data-testid=auth-otp-input] then page.keyboard.type(code), then click [data-testid=auth-verify-btn] (admin/existing users need the explicit click — do not rely on auto-nav). Event form testids: ev-title, ev-desc, ev-date (datetime-local), ev-loc, ev-cap, ev-pts, ev-cat, ev-img, ev-submit. Event detail: event-qr-box, event-register-btn, event-delete-btn, comment-input, comment-submit, attendee-row-{user_id}, attend-btn-{user_id}. Attendance page: attendance-page, att-tab-events, att-item-{id}, att-attendees-panel, att-row-{user_id}, att-mark-{user_id}. Role dropdown filter uses live GET /api/roles/taken — after registering a leader_*, that role is hidden from subsequent signups. Comment role_badge is snapshotted (stale after role change) — noted as minor bug.",
+  "rca_of_the_issue": "Comment stale-role-badge minor bug — POST /comments stores user_role = user['role'] into the comment doc (server.py:~662) and list_comments returns the raw doc. Since attendees and comments both add badges via the same UI helper, but only attendees re-resolve role on GET (_attach_roles), old comments keep their old role indefinitely. Fix: either strip user_role at insert time and populate at GET (mirror _attach_roles), or run a bulk lookup in list_comments similar to /events/{id}/attendees."
+}

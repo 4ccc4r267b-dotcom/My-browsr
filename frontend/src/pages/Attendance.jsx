@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import api, { formatApiError } from "@/lib/api";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
-import { canManageClub } from "@/lib/roles";
+import { canManageEvents, roleLabel } from "@/lib/roles";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -10,7 +10,7 @@ import { Calendar, GraduationCap, Users } from "lucide-react";
 
 export default function Attendance() {
   const { user } = useAuth();
-  const manageable = canManageClub(user?.role);
+  const manageable = canManageEvents(user?.role);
   const [events, setEvents] = useState([]);
   const [workshops, setWorkshops] = useState([]);
   const [selected, setSelected] = useState(null); // {kind, id, title}
@@ -31,6 +31,15 @@ export default function Attendance() {
       setAttendees([]);
     }
   };
+
+  // تحديث مباشر: أسماء الماسحين للباركود تظهر تلقائياً عند القائدة والنائبة
+  useEffect(() => {
+    if (!selected) return;
+    const t = setInterval(() => {
+      api.get(`/${selected.kind}/${selected.id}/attendees`).then(r => setAttendees(r.data)).catch(() => {});
+    }, 5000);
+    return () => clearInterval(t);
+  }, [selected?.kind, selected?.id]);
 
   const attend = async (uid) => {
     try {
@@ -105,7 +114,12 @@ export default function Attendance() {
                         <AvatarFallback className="bg-[#EAF1F6] text-[#2E4659]">{(a.user_name || "؟")[0]}</AvatarFallback>
                       </Avatar>
                       <div>
-                        <div className="text-sm font-semibold">{a.user_name}</div>
+                        <div className="text-sm font-semibold flex items-center gap-2">
+                          {a.user_name}
+                          {a.user_role && a.user_role !== "student" && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EDF5F2] text-[#2E8378]">{roleLabel(a.user_role)}</span>
+                          )}
+                        </div>
                         <div className="text-xs text-[#6B7B88]">{a.attended ? "✓ حضرت" : "لم تحضر بعد"}</div>
                       </div>
                     </div>

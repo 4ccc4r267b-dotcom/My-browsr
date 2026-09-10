@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Calendar, Users, Trash2, CheckCircle2, FileText } from "lucide-react";
-import { isDoctorOrAdmin } from "@/lib/roles";
+import { isDoctorOrAdmin, roleLabel } from "@/lib/roles";
 
 export default function WorkshopDetail() {
   const { id } = useParams();
@@ -154,7 +154,12 @@ export default function WorkshopDetail() {
               <div className="flex items-center gap-3">
                 <Avatar className="w-9 h-9"><AvatarFallback className="bg-[#EDF5F2] text-[#2E8378]">{(a.user_name || "؟")[0]}</AvatarFallback></Avatar>
                 <div>
-                  <div className="text-sm font-semibold">{a.user_name}</div>
+                  <div className="text-sm font-semibold flex items-center gap-2">
+                    {a.user_name}
+                    {a.user_role && a.user_role !== "student" && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EDF5F2] text-[#2E8378]">{roleLabel(a.user_role)}</span>
+                    )}
+                  </div>
                   <div className="text-xs text-[#6B7B88]">{a.attended ? "✓ حضرت" : "لم تحضر بعد"}</div>
                 </div>
               </div>
@@ -172,7 +177,12 @@ export default function WorkshopDetail() {
             <div key={c.id} className="flex gap-3">
               <Avatar className="w-9 h-9 shrink-0"><AvatarFallback className="bg-[#EAF1F6] text-[#2E4659]">{(c.user_name || "؟")[0]}</AvatarFallback></Avatar>
               <div className="flex-1 bg-[#FAFCFD] border border-[#EAF0F4] rounded-xl p-3">
-                <div className="text-sm font-semibold">{c.user_name}</div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm font-semibold">{c.user_name}</span>
+                  {c.user_role && c.user_role !== "student" && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EDF5F2] text-[#2E8378]">{roleLabel(c.user_role)}</span>
+                  )}
+                </div>
                 <div className="text-sm text-[#3A4A58] mt-1">{c.content}</div>
               </div>
             </div>

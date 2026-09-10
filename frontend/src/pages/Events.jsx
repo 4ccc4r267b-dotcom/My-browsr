@@ -14,7 +14,7 @@ import {
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Plus, MapPin, Users, Calendar as CalIcon } from "lucide-react";
-import { canManageClub } from "@/lib/roles";
+import { canManageEvents } from "@/lib/roles";
 
 const cats = [
   { v: "all", l: "الكل" },
@@ -34,7 +34,7 @@ export default function Events() {
   const load = () => api.get("/events", { params: filter === "all" ? {} : { category: filter } }).then(r => setEvents(r.data));
   useEffect(() => { load(); }, [filter]);
 
-  const canCreate = canManageClub(user?.role);
+  const canCreate = canManageEvents(user?.role);
 
   const create = async () => {
     try {
