@@ -77,6 +77,11 @@ body {
         background: radial-gradient(ellipse at 30% 20%, rgba(123,167,201,0.20), transparent 60%),
                     radial-gradient(ellipse at 80% 80%, rgba(46,131,120,0.14), transparent 60%);
     }
+    .panel-dark-glow {
+        background-color: #1C2B39;
+        background-image: radial-gradient(ellipse at 30% 20%, rgba(123,167,201,0.25), transparent 60%),
+                          radial-gradient(ellipse at 80% 80%, rgba(46,131,120,0.20), transparent 60%);
+    }
 }
 
 /* Fix RTL for sonner toaster */

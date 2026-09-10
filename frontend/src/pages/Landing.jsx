@@ -66,13 +66,8 @@ export default function Landing() {
           </div>
 
           <div className="lg:col-span-5 relative">
-            <div className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-[#DFE8EE] shadow-xl">
-              <img
-                src="https://images.unsplash.com/photo-1664574654700-75f1c1fad74e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzF8MHwxfHNlYXJjaHwzfHx1bml2ZXJzaXR5JTIwc3R1ZGVudHMlMjBhcmFiJTIwd29tZW4lMjBzdHVkeWluZ3xlbnwwfHx8fDE3ODkwMjI1MjN8MA&ixlib=rb-4.1.0&q=85"
-                alt=""
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1C2B39]/60 via-transparent to-transparent" />
+            <div className="relative aspect-[4/5] rounded-3xl border border-[#DFE8EE] shadow-xl bg-white flex items-center justify-center p-12 lantern-glow">
+              <img src="/logo.jpg" alt="شعار نادي مصباح كلية الأعمال" className="w-full max-w-sm object-contain" data-testid="landing-hero-logo" />
             </div>
           </div>
         </div>

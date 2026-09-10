@@ -80,14 +80,8 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-[#FAFCFD]">
-      {/* Left panel (artwork) */}
-      <div className="hidden lg:block relative overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1741241858332-83de91895bab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzF8MHwxfHNlYXJjaHwyfHx1bml2ZXJzaXR5JTIwc3R1ZGVudHMlMjBhcmFiJTIwd29tZW4lMjBzdHVkeWluZ3xlbnwwfHx8fDE3ODkwMjI1MjN8MA&ixlib=rb-4.1.0&q=85"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-tr from-[#1C2B39]/85 via-[#3A4A58]/45 to-transparent" />
+      {/* Left panel (brand) */}
+      <div className="hidden lg:block relative overflow-hidden panel-dark-glow">
         <div className="absolute inset-0 p-12 flex flex-col justify-between text-white">
           <div className="flex items-center gap-3">
             <img src="/logo.jpg" alt="شعار نادي مصباح كلية الأعمال" className="w-12 h-12 rounded-xl object-cover border border-white/40 bg-white" />
@@ -95,6 +89,9 @@ export default function AuthPage() {
               <div className="font-display text-xl font-bold">نادي مصباح</div>
               <div className="text-[11px] text-[#BBD4E8] font-semibold">كلية الأعمال</div>
             </div>
+          </div>
+          <div className="flex-1 flex items-center justify-center py-8">
+            <img src="/logo.jpg" alt="" className="w-56 h-56 rounded-3xl object-cover shadow-2xl border border-white/20" />
           </div>
           <div>
             <h2 className="font-display text-3xl leading-tight">
