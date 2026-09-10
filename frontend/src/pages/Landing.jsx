@@ -1,11 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Sparkles, Users, GraduationCap, Trophy, Calendar } from "lucide-react";
 
 export default function Landing() {
   const { user } = useAuth();
+  if (user && user.id) return <Navigate to="/dashboard" replace />;
   return (
     <div className="min-h-screen bg-[#FAFCFD] text-[#1C2B39] grain">
       {/* Nav */}

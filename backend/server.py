@@ -185,7 +185,7 @@ def build_otp_email_html(code: str) -> str:
 # ---------------- JWT ----------------
 def create_access_token(user_id: str, email: str) -> str:
     return jwt.encode({"sub": user_id, "email": email, "type": "access",
-                       "exp": datetime.now(timezone.utc) + timedelta(hours=12)},
+                       "exp": datetime.now(timezone.utc) + timedelta(days=30)},
                       JWT_SECRET, algorithm=JWT_ALG)
 
 def create_refresh_token(user_id: str) -> str:
@@ -196,7 +196,7 @@ def create_refresh_token(user_id: str) -> str:
 def set_auth_cookies(response: Response, uid: str, email: str):
     at = create_access_token(uid, email)
     rt = create_refresh_token(uid)
-    response.set_cookie("access_token", at, httponly=True, secure=True, samesite="none", max_age=43200, path="/")
+    response.set_cookie("access_token", at, httponly=True, secure=True, samesite="none", max_age=2592000, path="/")
     response.set_cookie("refresh_token", rt, httponly=True, secure=True, samesite="none", max_age=2592000, path="/")
 
 async def _decode_user(token: str):
