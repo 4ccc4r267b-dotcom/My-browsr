@@ -193,11 +193,15 @@ def create_refresh_token(user_id: str) -> str:
                        "exp": datetime.now(timezone.utc) + timedelta(days=30)},
                       JWT_SECRET, algorithm=JWT_ALG)
 
-def set_auth_cookies(response: Response, uid: str, email: str):
+def set_auth_cookies(response: Response, uid: str, email: str, remember: bool = True) -> str:
     at = create_access_token(uid, email)
     rt = create_refresh_token(uid)
-    response.set_cookie("access_token", at, httponly=True, secure=True, samesite="none", max_age=2592000, path="/")
-    response.set_cookie("refresh_token", rt, httponly=True, secure=True, samesite="none", max_age=2592000, path="/")
+    cookie_kwargs = dict(httponly=True, secure=True, samesite="none", path="/")
+    if remember:
+        cookie_kwargs["max_age"] = 2592000
+    response.set_cookie("access_token", at, **cookie_kwargs)
+    response.set_cookie("refresh_token", rt, **cookie_kwargs)
+    return at
 
 async def _decode_user(token: str):
     payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALG])
@@ -209,19 +213,19 @@ async def _decode_user(token: str):
     return user
 
 async def get_current_user(request: Request) -> dict:
-    token = request.cookies.get("access_token")
-    if not token:
-        h = request.headers.get("Authorization", "")
-        if h.startswith("Bearer "):
-            token = h[7:]
-    if not token:
-        raise HTTPException(401, "Not authenticated")
-    try:
-        return await _decode_user(token)
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(401, "Token expired")
-    except jwt.InvalidTokenError:
-        raise HTTPException(401, "Invalid token")
+    candidates = []
+    c = request.cookies.get("access_token")
+    if c:
+        candidates.append(c)
+    h = request.headers.get("Authorization", "")
+    if h.startswith("Bearer "):
+        candidates.append(h[7:])
+    for token in candidates:
+        try:
+            return await _decode_user(token)
+        except Exception:
+            continue
+    raise HTTPException(401, "Not authenticated")
 
 def require_role(*roles):
     async def _dep(user=Depends(get_current_user)):
@@ -252,6 +256,7 @@ class VerifyOTP(BaseModel):
     major: Optional[str] = None
     year: Optional[int] = None
     role: Optional[Role] = None  # only allowed if in ALLOWED_SIGNUP_ROLES
+    remember: bool = True
 
 class UpdateProfile(BaseModel):
     name: Optional[str] = None
@@ -375,8 +380,8 @@ async def verify_otp(body: VerifyOTP, response: Response):
         await db.users.insert_one(dict(user))
         user.pop("_id", None)
 
-    set_auth_cookies(response, user["id"], user["email"])
-    return {"user": user}
+    token = set_auth_cookies(response, user["id"], user["email"], body.remember)
+    return {"user": user, "access_token": token}
 
 @api.post("/auth/logout")
 async def logout(response: Response):

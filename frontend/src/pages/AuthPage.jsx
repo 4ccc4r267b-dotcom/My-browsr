@@ -18,14 +18,17 @@ export default function AuthPage() {
   const [name, setName] = useState("");
   const [major, setMajor] = useState("");
   const [role, setRole] = useState("student");
+  const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const { refresh, user } = useAuth();
   const nav = useNavigate();
 
   useEffect(() => {
-    if (user && user.id) nav("/dashboard");
-  }, [user, nav]);
+    // Auto-redirect only BEFORE the OTP flow starts, so a late-finishing
+    // session check never kicks the user back while entering the code.
+    if (user && user.id && step === "email") nav("/dashboard", { replace: true });
+  }, [user, nav, step]);
 
   useEffect(() => {
     if (cooldown > 0) {
@@ -65,7 +68,12 @@ export default function AuthPage() {
       if (name) payload.name = name;
       if (major) payload.major = major;
       if (role) payload.role = role;
+      payload.remember = remember;
       const { data } = await api.post("/auth/verify-otp", payload);
+      if (data.access_token) {
+        if (remember) localStorage.setItem("misbah_token", data.access_token);
+        else localStorage.removeItem("misbah_token");
+      }
       await refresh();
       toast.success(`أهلاً ${data.user.name}`);
       nav("/dashboard");
@@ -178,6 +186,17 @@ export default function AuthPage() {
                   </Select>
                 </div>
               </div>
+
+              <label className="flex items-center gap-2 cursor-pointer select-none justify-center">
+                <input
+                  type="checkbox"
+                  data-testid="auth-remember-check"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                  className="w-4 h-4 accent-[#3D5A73]"
+                />
+                <span className="text-sm text-[#3A4A58]">تذكّريني على هذا الجهاز</span>
+              </label>
 
               <Button
                 type="submit"

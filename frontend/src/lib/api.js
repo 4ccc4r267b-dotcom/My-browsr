@@ -8,6 +8,14 @@ const api = axios.create({
   withCredentials: true,
 });
 
+api.interceptors.request.use((config) => {
+  const t = localStorage.getItem("misbah_token");
+  if (t && !config.headers.Authorization) {
+    config.headers.Authorization = `Bearer ${t}`;
+  }
+  return config;
+});
+
 export function formatApiError(detail) {
   if (detail == null) return "حدث خطأ. حاولي مرة أخرى.";
   if (typeof detail === "string") return detail;

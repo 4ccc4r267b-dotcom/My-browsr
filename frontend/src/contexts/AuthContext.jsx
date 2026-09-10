@@ -21,6 +21,7 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try { await api.post("/auth/logout"); } catch {}
+    localStorage.removeItem("misbah_token");
     setUser(false);
   };
 

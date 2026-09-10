@@ -6,6 +6,13 @@ import { ArrowLeft, Sparkles, Users, GraduationCap, Trophy, Calendar } from "luc
 
 export default function Landing() {
   const { user } = useAuth();
+  if (user === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#FAFCFD] text-[#6B7B88]">
+        جاري التحميل...
+      </div>
+    );
+  }
   if (user && user.id) return <Navigate to="/dashboard" replace />;
   return (
     <div className="min-h-screen bg-[#FAFCFD] text-[#1C2B39] grain">
