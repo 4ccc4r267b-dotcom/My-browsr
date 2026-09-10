@@ -10,7 +10,7 @@ export default function Leaderboard() {
   return (
     <div className="space-y-6" data-testid="leaderboard-page">
       <div>
-        <h1 className="font-display text-3xl font-bold flex items-center gap-2"><Trophy className="w-7 h-7 text-[#7BA7C9]" /> لوحة الشرف</h1>
+        <h1 className="font-display text-3xl font-bold flex items-center gap-2"><Trophy className="w-7 h-7 text-[#D9A416]" /> لوحة الصدارة</h1>
         <p className="text-sm text-[#6B7B88] mt-1">أكثر عضوات النادي تألقاً هذا الفصل الدراسي.</p>
       </div>
 

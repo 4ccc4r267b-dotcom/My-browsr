@@ -10,15 +10,25 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Home, Calendar, GraduationCap, Megaphone, Trophy, ShieldCheck, LogOut, User } from "lucide-react";
+import { ShieldCheck, LogOut, User } from "lucide-react";
 import { roleLabel } from "@/lib/roles";
+import LampIcon from "@/components/LampIcon";
 
-const links = [
-  { to: "/dashboard", label: "الرئيسية", icon: Home, testid: "nav-dashboard", mobileId: "mobile-nav-home" },
-  { to: "/events", label: "الفعاليات", icon: Calendar, testid: "nav-events", mobileId: "mobile-nav-events" },
-  { to: "/workshops", label: "الورش", icon: GraduationCap, testid: "nav-workshops", mobileId: "mobile-nav-workshops" },
-  { to: "/news", label: "الإعلانات", icon: Megaphone, testid: "nav-news", mobileId: "mobile-nav-news" },
-  { to: "/leaderboard", label: "لوحة الشرف", icon: Trophy, testid: "nav-leaderboard", mobileId: "mobile-nav-leaderboard" },
+const desktopLinks = [
+  { to: "/dashboard", label: "الرئيسية", testid: "nav-dashboard" },
+  { to: "/events", label: "الأنشطة", testid: "nav-events" },
+  { to: "/workshops", label: "الورش", testid: "nav-workshops" },
+  { to: "/news", label: "الإعلانات", testid: "nav-news" },
+  { to: "/leaderboard", label: "لوحة الصدارة", testid: "nav-leaderboard" },
+];
+
+const mobileLinks = [
+  { to: "/dashboard", label: "الرئيسية", mobileId: "mobile-nav-home" },
+  { to: "/events", label: "الأنشطة", mobileId: "mobile-nav-activities" },
+  { to: "/registrations", label: "تسجيل", mobileId: "mobile-nav-register" },
+  { to: "/attendance", label: "إدارة الحضور", mobileId: "mobile-nav-attendance" },
+  { to: "/leaderboard", label: "لوحة الصدارة", mobileId: "mobile-nav-leaderboard" },
+  { to: "/profile", label: "ملفي", mobileId: "mobile-nav-profile" },
 ];
 
 function Brand() {
@@ -80,7 +90,7 @@ export default function Layout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
           <Brand />
           <nav className="hidden md:flex items-center gap-1">
-            {links.map(l => (
+            {desktopLinks.map(l => (
               <NavLink
                 key={l.to}
                 to={l.to}
@@ -118,20 +128,22 @@ export default function Layout() {
 
       {/* Mobile bottom nav */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-[#DFE8EE] safe-bottom">
-        <div className="grid grid-cols-5">
-          {links.map(l => (
+        <div className="grid grid-cols-6">
+          {mobileLinks.map(l => (
             <NavLink
               key={l.to}
               to={l.to}
               data-testid={l.mobileId}
-              className={({ isActive }) =>
-                `flex flex-col items-center justify-center py-2.5 text-[11px] gap-1 ${
-                  isActive ? "text-[#2E4659]" : "text-[#3A4A58]"
-                }`
-              }
+              className="flex flex-col items-center justify-center py-2 text-[10px] gap-0.5"
             >
-              <l.icon className="w-5 h-5" />
-              <span>{l.label}</span>
+              {({ isActive }) => (
+                <>
+                  <LampIcon active={isActive} />
+                  <span className={`whitespace-nowrap leading-tight transition-colors duration-300 ${isActive ? "text-[#C8952A] font-bold" : "text-[#6B7B88]"}`}>
+                    {l.label}
+                  </span>
+                </>
+              )}
             </NavLink>
           ))}
         </div>

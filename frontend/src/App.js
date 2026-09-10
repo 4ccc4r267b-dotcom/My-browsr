@@ -12,6 +12,8 @@ import EventDetail from "@/pages/EventDetail";
 import Workshops from "@/pages/Workshops";
 import WorkshopDetail from "@/pages/WorkshopDetail";
 import News from "@/pages/News";
+import Registrations from "@/pages/Registrations";
+import Attendance from "@/pages/Attendance";
 import Profile from "@/pages/Profile";
 import AdminPanel from "@/pages/AdminPanel";
 import Leaderboard from "@/pages/Leaderboard";
@@ -50,6 +52,8 @@ export default function App() {
             <Route path="/workshops" element={<Workshops />} />
             <Route path="/workshops/:id" element={<WorkshopDetail />} />
             <Route path="/news" element={<News />} />
+            <Route path="/registrations" element={<Registrations />} />
+            <Route path="/attendance" element={<Attendance />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/admin" element={<AdminOnly><AdminPanel /></AdminOnly>} />

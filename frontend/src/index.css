@@ -82,6 +82,18 @@ body {
         background-image: radial-gradient(ellipse at 30% 20%, rgba(123,167,201,0.25), transparent 60%),
                           radial-gradient(ellipse at 80% 80%, rgba(46,131,120,0.20), transparent 60%);
     }
+    .lamp-icon { display: inline-flex; transition: transform .25s ease; }
+    .lamp-icon svg { overflow: visible; transition: filter .4s ease; }
+    .lamp-icon .lamp-body { stroke: #8293A2; fill: transparent; transition: fill .35s ease, stroke .35s ease; }
+    .lamp-icon .lamp-flame { fill: transparent; stroke: #8293A2; stroke-width: 1.1; transition: fill .35s ease, stroke .35s ease; }
+    .lamp-icon .lamp-base path { stroke: #8293A2; transition: stroke .35s ease; }
+    .lamp-icon .lamp-rays path { stroke: #9AA8B5; opacity: .5; transition: stroke .35s ease, opacity .35s ease; }
+    .lamp-icon.lamp-active { transform: translateY(-2px) scale(1.08); }
+    .lamp-icon.lamp-active svg { filter: drop-shadow(0 0 4px rgba(246,195,68,.9)) drop-shadow(0 0 12px rgba(246,195,68,.5)); }
+    .lamp-icon.lamp-active .lamp-body { fill: #F6C344; stroke: #D9A416; }
+    .lamp-icon.lamp-active .lamp-flame { fill: #FFF3C9; stroke: #E8B62E; }
+    .lamp-icon.lamp-active .lamp-base path { stroke: #D9A416; }
+    .lamp-icon.lamp-active .lamp-rays path { stroke: #F0B429; opacity: 1; }
 }
 
 /* Fix RTL for sonner toaster */
