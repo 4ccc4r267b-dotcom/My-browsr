@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Calendar, GraduationCap, Trophy, Megaphone, ArrowLeft, Camera, ScanLine } from "lucide-react";
 import QrScannerDialog from "@/components/QrScannerDialog";
+import { roleLabel } from "@/lib/roles";
 
 function levelInfo(p) {
   if (p >= 601) return { name: "مصباح ذهبي", next: null, min: 601, tint: "bg-[#EDF5F2] text-[#2E8378]" };
@@ -47,7 +48,11 @@ export default function Dashboard() {
             <div className="text-xs tracking-widest font-bold text-[#2E8378]">مرحباً بعودتكِ</div>
             <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#1C2B39] mt-1">{user?.name}</h1>
             <div className="mt-2 flex items-center gap-2 flex-wrap">
-              <Badge className={`${lvl.tint} border-0 rounded-full`}>{lvl.name}</Badge>
+              {user?.role === "student" ? (
+                <Badge className={`${lvl.tint} border-0 rounded-full`}>{lvl.name}</Badge>
+              ) : (
+                <Badge className="bg-[#EDF5F2] text-[#2E8378] border-0 rounded-full" data-testid="user-role-badge">{roleLabel(user?.role)}</Badge>
+              )}
               {user?.major && <span className="text-xs text-[#6B7B88]">· {user.major}</span>}
               {user?.year > 0 && <span className="text-xs text-[#6B7B88]">· السنة {user.year}</span>}
             </div>

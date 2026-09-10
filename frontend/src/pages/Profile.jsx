@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Trophy } from "lucide-react";
+import { roleLabel } from "@/lib/roles";
 
 function levelInfo(p) {
   if (p >= 601) return { name: "مصباح ذهبي", next: null, min: 601 };
@@ -49,7 +50,14 @@ export default function Profile() {
         <div className="flex-1 min-w-[200px]">
           <div className="font-display text-2xl font-bold">{user?.name}</div>
           <div className="text-sm text-[#6B7B88]">{user?.email}</div>
-          <div className="mt-2 flex gap-2 flex-wrap"><Badge className="bg-[#EAF1F6] text-[#2E4659] border-0 rounded-full">{lvl.name}</Badge>{user?.major && <Badge className="bg-[#EDF5F2] text-[#2E8378] border-0 rounded-full">{user.major}</Badge>}</div>
+          <div className="mt-2 flex gap-2 flex-wrap">
+            {user?.role === "student" ? (
+              <Badge className="bg-[#EAF1F6] text-[#2E4659] border-0 rounded-full">{lvl.name}</Badge>
+            ) : (
+              <Badge className="bg-[#EDF5F2] text-[#2E8378] border-0 rounded-full" data-testid="profile-role-badge">{roleLabel(user?.role)}</Badge>
+            )}
+            {user?.major && <Badge className="bg-[#EDF5F2] text-[#2E8378] border-0 rounded-full">{user.major}</Badge>}
+          </div>
         </div>
         <div className="min-w-[220px]">
           <div className="text-xs text-[#6B7B88]">نقاط مصباح</div>
