@@ -236,17 +236,18 @@ def require_role(*roles):
 
 # ---------------- Models ----------------
 Role = Literal[
-    "student", "supervisor", "admin",
+    "student", "supervisor", "admin", "club_leader",
     "leader_admin", "leader_law", "leader_media", "leader_accounting",
     "deputy_admin", "deputy_law", "deputy_media", "deputy_accounting",
 ]
 
+CLUB_LEADER = "club_leader"
 LEADER_ROLES = ("leader_admin", "leader_law", "leader_media", "leader_accounting")
 DEPUTY_ROLES = ("deputy_admin", "deputy_law", "deputy_media", "deputy_accounting")
-UNIT_ROLES = LEADER_ROLES + DEPUTY_ROLES  # كل منصب يشغله شخص واحد فقط
-SIGNUP_ROLES = ("student", "supervisor", *UNIT_ROLES)
-CLUB_MANAGERS = ("admin", "supervisor", *LEADER_ROLES)
-EVENT_STAFF = ("admin", "supervisor", *LEADER_ROLES, *DEPUTY_ROLES)  # إضافة فعاليات + رؤية الحضور
+UNIT_ROLES = (CLUB_LEADER, *LEADER_ROLES, *DEPUTY_ROLES)  # كل منصب يشغله شخص واحد فقط
+SIGNUP_ROLES = ("student", "supervisor", *UNIT_ROLES)  # طالبة ودكتورة متاحة دائماً
+CLUB_MANAGERS = ("admin", "supervisor", CLUB_LEADER, *LEADER_ROLES)
+EVENT_STAFF = ("admin", "supervisor", CLUB_LEADER, *LEADER_ROLES, *DEPUTY_ROLES)  # إضافة فعاليات + رؤية الحضور
 
 class RequestOTP(BaseModel):
     email: EmailStr
@@ -702,7 +703,7 @@ async def admin_role(uid: str, body: RoleUpdate, user=Depends(require_role("admi
     if body.role in UNIT_ROLES:
         holder = await db.users.find_one({"role": body.role, "id": {"$ne": uid}})
         if holder:
-            raise HTTPException(400, "هذا المنصب محجوز — كل وحدة لها قائدة/نائبة واحدة فقط")
+            raise HTTPException(400, "هذا المنصب محجوز — كل منصب (قائدة نادي/وحدة/نيابة) لشخص واحد فقط")
     await db.users.update_one({"id": uid}, {"$set": {"role": body.role}})
     return {"status": "ok"}
 
