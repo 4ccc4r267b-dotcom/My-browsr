@@ -60,8 +60,8 @@ export default function Workshops() {
     <div className="space-y-6" data-testid="workshops-page">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl font-bold">ورش الدكاترة</h1>
-          <p className="text-sm text-[#6B7B88] mt-1">محتوى تخصصي بإشراف نخبة من الأكاديميات.</p>
+          <h1 className="font-display text-3xl font-bold">الدورات والورش والمسابقات</h1>
+          <p className="text-sm text-[#6B7B88] mt-1">لمتابعة الدورات والورش والمسابقات مع نخبة الدكاترة.</p>
         </div>
         {canCreate && (
           <Dialog open={open} onOpenChange={setOpen}>
@@ -80,7 +80,7 @@ export default function Workshops() {
                 <div><Label>الوصف</Label><Textarea data-testid="ws-desc" value={form.description} onChange={e => setForm({...form, description: e.target.value})} /></div>
                 <div className="grid grid-cols-2 gap-3">
                   <div><Label>الموعد</Label><Input data-testid="ws-date" type="datetime-local" value={form.scheduled_at} onChange={e => setForm({...form, scheduled_at: e.target.value})} /></div>
-                  <div><Label>اسم المشرفة</Label><Input data-testid="ws-sup" value={form.supervisor_name} onChange={e => setForm({...form, supervisor_name: e.target.value})} placeholder={user?.name} /></div>
+                  <div><Label>اسم الدكتور</Label><Input data-testid="ws-sup" value={form.supervisor_name} onChange={e => setForm({...form, supervisor_name: e.target.value})} placeholder={user?.name} /></div>
                   <div><Label>السعة</Label><Input data-testid="ws-cap" type="number" value={form.capacity} onChange={e => setForm({...form, capacity: e.target.value})} /></div>
                   <div><Label>النقاط</Label><Input data-testid="ws-pts" type="number" value={form.points} onChange={e => setForm({...form, points: e.target.value})} /></div>
                   <div className="col-span-2"><Label>رابط فيديو (YouTube embed)</Label><Input data-testid="ws-video" dir="ltr" value={form.video_url} onChange={e => setForm({...form, video_url: e.target.value})} placeholder="https://www.youtube.com/embed/..." /></div>

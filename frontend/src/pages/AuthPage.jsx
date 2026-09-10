@@ -17,7 +17,6 @@ export default function AuthPage() {
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [major, setMajor] = useState("");
-  const [year, setYear] = useState("");
   const [role, setRole] = useState("student");
   const [loading, setLoading] = useState(false);
   const [cooldown, setCooldown] = useState(0);
@@ -65,7 +64,6 @@ export default function AuthPage() {
       const payload = { email: email.toLowerCase().trim(), code };
       if (name) payload.name = name;
       if (major) payload.major = major;
-      if (year) payload.year = parseInt(year, 10);
       if (role) payload.role = role;
       const { data } = await api.post("/auth/verify-otp", payload);
       await refresh();
@@ -100,7 +98,7 @@ export default function AuthPage() {
               يُلهم ويُنير الطريق.
             </h2>
             <p className="text-white/80 mt-4 leading-relaxed max-w-md text-sm">
-              انضمي لعضوات مصباح، احضري فعاليات مميزة، وشاركي في ورش الدكاترة لتصنعي فرقاً في مسيرتكِ.
+              انضمي لعضوات مصباح، احضري فعاليات مميزة، وتابعي الدورات والورش والمسابقات لتصنعي فرقاً في مسيرتكِ.
             </p>
           </div>
         </div>
@@ -170,16 +168,7 @@ export default function AuthPage() {
                   <Label className="text-xs text-[#3A4A58] mb-1 block">التخصص (اختياري)</Label>
                   <Input data-testid="auth-major-input" value={major} onChange={e => setMajor(e.target.value)} placeholder="مثال: علوم الحاسب" />
                 </div>
-                <div>
-                  <Label className="text-xs text-[#3A4A58] mb-1 block">السنة الدراسية</Label>
-                  <Select value={year} onValueChange={setYear}>
-                    <SelectTrigger data-testid="auth-year-select"><SelectValue placeholder="اختاري" /></SelectTrigger>
-                    <SelectContent>
-                      {[1, 2, 3, 4, 5, 6].map(y => <SelectItem key={y} value={String(y)}>السنة {y}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
+                <div className="col-span-2">
                   <Label className="text-xs text-[#3A4A58] mb-1 block">الدور</Label>
                   <Select value={role} onValueChange={setRole}>
                     <SelectTrigger data-testid="auth-role-select"><SelectValue /></SelectTrigger>

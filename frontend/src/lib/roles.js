@@ -1,6 +1,6 @@
 export const ROLE_OPTIONS = [
   { value: "student", label: "طالبة" },
-  { value: "supervisor", label: "دكتورة" },
+  { value: "supervisor", label: "دكتور" },
   { value: "leader_admin", label: "قائدة وحدة الإدارة" },
   { value: "leader_law", label: "قائدة وحدة القانون" },
   { value: "leader_media", label: "قائدة وحدة الإعلام" },

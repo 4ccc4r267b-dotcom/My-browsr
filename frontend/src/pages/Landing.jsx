@@ -43,8 +43,8 @@ export default function Landing() {
               <span className="text-[#3D5A73]">تُشعل حماس</span> عضواتنا.
             </h1>
             <p className="text-base sm:text-lg text-[#3A4A58] leading-[1.9] max-w-2xl">
-              منصة موحدة تجمع الطالبات، الدكاترة المشرفات، وإدارة النادي في مكان واحد.
-              سجّلي في الفعاليات، تابعي ورش الدكاترة، واجمعي نقاط مصباح لتتصدّري لوحة الشرف.
+              منصة موحدة تجمع الطالبات، الدكاترة، وإدارة النادي في مكان واحد.
+              سجّلي في الفعاليات، تابعي الدورات والورش والمسابقات، واجمعي نقاط مصباح لتتصدّري لوحة الصدارة.
             </p>
             <div className="flex flex-wrap gap-3 pt-2">
               <Link
@@ -85,9 +85,9 @@ export default function Landing() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
               { icon: Calendar, title: "فعاليات مصباح", d: "سجّلي في الملتقيات والندوات والبطولات بضغطة زر." },
-              { icon: GraduationCap, title: "ورش الدكاترة", d: "محتوى تخصصي، فيديو، وملفات PDF من نخبة الأكاديميات." },
+              { icon: GraduationCap, title: "الدورات والورش والمسابقات", d: "تابعي الدورات والورش والمسابقات بمحتوى مرئي وملفات PDF من نخبة الدكاترة." },
               { icon: Trophy, title: "نقاط ومستويات", d: "اجمعي نقاطكِ من الحضور واصعدي مستويات مصباح." },
-              { icon: Users, title: "مجتمع دافئ", d: "تواصلي مع زميلاتكِ والمشرفات عبر تعليقات وإعلانات النادي." },
+              { icon: Users, title: "مجتمع دافئ", d: "تواصلي مع زميلاتكِ والدكاترة عبر تعليقات وإعلانات النادي." },
             ].map(f => (
               <div key={f.title} className="bg-white rounded-2xl border border-[#DFE8EE] p-6 hover:border-[#7BA7C9] transition-colors">
                 <div className="w-11 h-11 rounded-xl bg-[#EDF5F2] flex items-center justify-center mb-4">

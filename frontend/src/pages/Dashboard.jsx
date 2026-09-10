@@ -101,7 +101,7 @@ export default function Dashboard() {
 
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display text-xl font-bold">ورش الدكاترة</h2>
+          <h2 className="font-display text-xl font-bold">الدورات والورش والمسابقات</h2>
           <Link to="/workshops" className="text-sm text-[#2E4659] hover:underline inline-flex items-center gap-1">
             عرض الكل <ArrowLeft className="w-4 h-4" />
           </Link>
