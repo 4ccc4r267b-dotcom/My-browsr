@@ -63,19 +63,6 @@ export default function Landing() {
                 تعرّفي على المميزات
               </a>
             </div>
-
-            <div className="pt-6 grid grid-cols-3 gap-4 max-w-lg">
-              {[
-                { k: "+180", v: "عضوة نشطة" },
-                { k: "24", v: "ورشة تخصصية" },
-                { k: "56", v: "فعالية سنوية" },
-              ].map(s => (
-                <div key={s.v} className="text-right">
-                  <div className="font-display text-2xl font-bold text-[#1C2B39]">{s.k}</div>
-                  <div className="text-xs text-[#6B7B88] mt-0.5">{s.v}</div>
-                </div>
-              ))}
-            </div>
           </div>
 
           <div className="lg:col-span-5 relative">
@@ -86,11 +73,6 @@ export default function Landing() {
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#1C2B39]/60 via-transparent to-transparent" />
-              <div className="absolute bottom-5 right-5 left-5 bg-white/95 backdrop-blur rounded-2xl p-4 border border-[#DFE8EE]">
-                <div className="text-[10px] tracking-widest text-[#2E8378] font-bold">هذا الأسبوع</div>
-                <div className="font-display text-lg mt-1">ملتقى قياديات مصباح الأول</div>
-                <div className="text-xs text-[#6B7B88] mt-1">القاعة الكبرى · باقي 12 مقعد</div>
-              </div>
             </div>
           </div>
         </div>
