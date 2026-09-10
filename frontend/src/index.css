@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=El+Messiri:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+
+html, body, #root {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: 'Tajawal', 'IBM Plex Sans Arabic', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: #FAFCFD;
+    color: #1C2B39;
+    direction: rtl;
+    text-align: right;
+    overflow-x: hidden;
+}
+
+.font-display {
+    font-family: 'El Messiri', 'Tajawal', serif;
+}
+
+@layer base {
+    :root {
+        --background: 204 40% 98%;
+        --foreground: 209 35% 14%;
+        --card: 0 0% 100%;
+        --card-foreground: 209 35% 14%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 209 35% 14%;
+        --primary: 209 32% 35%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 205 30% 94%;
+        --secondary-foreground: 209 35% 18%;
+        --muted: 205 25% 93%;
+        --muted-foreground: 208 12% 45%;
+        --accent: 174 45% 35%;
+        --accent-foreground: 0 0% 100%;
+        --destructive: 0 72% 51%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 206 25% 88%;
+        --input: 206 25% 88%;
+        --ring: 209 32% 35%;
+        --radius: 0.75rem;
+        --chart-1: 209 32% 35%;
+        --chart-2: 174 45% 35%;
+        --chart-3: 152 40% 30%;
+        --chart-4: 205 45% 55%;
+        --chart-5: 27 87% 67%;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+@layer utilities {
+    .grain {
+        position: relative;
+    }
+    .grain::before {
+        content: "";
+        position: absolute; inset: 0; pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0.7 0 0 0 0 0.6 0 0 0 0 0.5 0 0 0 0.11 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        opacity: 0.6; mix-blend-mode: multiply;
+    }
+    .lantern-glow {
+        background: radial-gradient(ellipse at 30% 20%, rgba(123,167,201,0.20), transparent 60%),
+                    radial-gradient(ellipse at 80% 80%, rgba(46,131,120,0.14), transparent 60%);
+    }
+}
+
+/* Fix RTL for sonner toaster */
+[data-sonner-toaster] {
+    direction: rtl;
+    font-family: 'Tajawal', sans-serif !important;
+}
+
+/* Debug wrapper (unchanged) */
+@layer base {
+    [data-debug-wrapper="true"] {
+        display: contents !important;
+    }
+}

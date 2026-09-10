@@ -1,0 +1,228 @@
+{
+  "project_name": "نادي مصباح الطلابي - Misbah Student Club Web App",
+  "archetype": "Warm Feminine Intellectual - Botanical & Academic Elegance",
+  "direction": "rtl",
+  "locale": "ar-SA",
+  "design_philosophy": "نادي مصباح (Lantern / Illuminating Club) combines academic prestige with warm, empowering feminine hospitality. We strictly reject cold corporate tech purples (#7351B7 is forbidden) and generic AI templates. The design blends soft alabaster parchment, warm terracotta rose, luminous desert amber gold, and deep espresso noir for razor-sharp typography. Every layout is mobile-first, tactile, and thoughtfully adapted for right-to-left Arabic reading patterns.",
+  "font_system": {
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=El+Messiri:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+    "heading_font": "'El Messiri', 'Tajawal', serif, sans-serif",
+    "body_font": "'Tajawal', 'IBM Plex Sans Arabic', -apple-system, sans-serif",
+    "mono_font": "'JetBrains Mono', 'IBM Plex Sans Arabic', monospace",
+    "font_weights": {
+      "light": 300,
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700,
+      "extrabold": 800
+    },
+    "typography_scale": {
+      "h1": "text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold tracking-normal leading-[1.2] font-['El_Messiri']",
+      "h2": "text-2xl sm:text-3xl lg:text-3xl font-bold tracking-tight leading-[1.3] font-['El_Messiri']",
+      "h3": "text-xl sm:text-2xl font-semibold leading-snug font-['Tajawal']",
+      "h4": "text-lg sm:text-xl font-medium leading-snug font-['Tajawal']",
+      "body_lg": "text-base sm:text-lg leading-relaxed font-normal font-['Tajawal']",
+      "body": "text-sm sm:text-base leading-relaxed font-normal font-['Tajawal']",
+      "caption": "text-xs sm:text-sm leading-normal text-muted-foreground font-['Tajawal']",
+      "overline": "text-[11px] sm:text-xs tracking-wider uppercase font-semibold text-amber-800"
+    }
+  },
+  "color_palette": {
+    "theme_mode": "light_first_with_warm_surfaces",
+    "forbidden_colors": ["#7351B7", "#1B93A4"],
+    "brand_colors": {
+      "parchment_bg": "#FDFBF7",
+      "sand_surface": "#F7F2EB",
+      "card_surface": "#FFFFFF",
+      "terracotta_rose": "#C86D74",
+      "terracotta_rose_hover": "#B35B62",
+      "warm_rose_tint": "#F9ECEE",
+      "desert_gold": "#D99B26",
+      "soft_gold_tint": "#FEF7E6",
+      "deep_espresso": "#1E1815",
+      "soft_charcoal": "#38312C",
+      "border_sand": "#EAE2D5",
+      "border_sand_subtle": "#F2ECE2",
+      "success_olive": "#2D6A4F",
+      "success_olive_bg": "#EBF6F0",
+      "destructive_crimson": "#B91C1C",
+      "destructive_crimson_bg": "#FEF2F2"
+    },
+    "css_tokens": {
+      ":root": {
+        "--background": "38 43% 98%",
+        "--foreground": "20 17% 10%",
+        "--card": "0 0% 100%",
+        "--card-foreground": "20 17% 10%",
+        "--popover": "0 0% 100%",
+        "--popover-foreground": "20 17% 10%",
+        "--primary": "355 45% 60%",
+        "--primary-foreground": "0 0% 100%",
+        "--secondary": "37 38% 94%",
+        "--secondary-foreground": "20 17% 15%",
+        "--muted": "37 28% 93%",
+        "--muted-foreground": "20 10% 45%",
+        "--accent": "39 74% 50%",
+        "--accent-foreground": "20 20% 12%",
+        "--destructive": "0 72% 51%",
+        "--destructive-foreground": "0 0% 98%",
+        "--border": "37 25% 88%",
+        "--input": "37 25% 88%",
+        "--ring": "355 45% 60%",
+        "--radius": "0.75rem"
+      }
+    }
+  },
+  "responsive": {
+    "breakpoint": "mobile-first",
+    "mobile_container": "w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+    "layout": {
+      "mobile_nav": "Fixed bottom-nav bar with 5 key actions on mobile + clean top app bar with logo and notifications. Desktop switches to an elegant glassmorphic top nav or side panel with full role-based tabs.",
+      "grid_reflow": "All desktop multi-column grids collapse to 1 column on mobile (<640px), 2 columns on tablets (640px-1024px), and 3-4 columns on desktop (>1024px).",
+      "hero_mobile": "Single column vertical stack on mobile with lantern badge, headline, role preview tabs, and quick email+OTP trigger. Side-by-side on desktop.",
+      "dashboard_tabs": "Horizontal scrollable pill tabs on mobile with sticky active indicators; full bento grid layout on desktop."
+    },
+    "typography": {
+      "mobile_rule": "Headings clamp down by 20-30% on small devices (e.g. text-2xl on mobile, text-4xl on desktop) to prevent clipping in Arabic text. Body text remains 15px-16px for comfortable Arabic reading.",
+      "line_height_arabic": "Arabic typography requires relaxed line-height (leading-[1.6] to leading-[1.8] for paragraphs) to prevent diacritics and ascenders/descenders from colliding."
+    },
+    "overflow_guard": {
+      "rule": "Every main container and view must have `overflow-x-hidden w-full max-w-full box-border`. Tables must have horizontal scroll wrappers (`overflow-x-auto -mx-4 px-4 sm:mx-0`)."
+    },
+    "tap_targets": {
+      "rule": "Minimum 44px x 44px for buttons, chips, tabs, inputs, and OTP boxes for effortless mobile tapping."
+    }
+  },
+  "image_urls": {
+    "hero_students_collaboration": {
+      "url": "https://images.unsplash.com/photo-1664574654700-75f1c1fad74e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzF8MHwxfHNlYXJjaHwzfHx1bml2ZXJzaXR5JTIwc3R1ZGVudHMlMjBhcmFiJTIwd29tZW4lMjBzdHVkeWluZ3xlbnwwfHx8fDE3ODkwMjI1MjN8MA&ixlib=rb-4.1.0&q=85",
+      "description": "طالبات جامعيات يتشاركن العمل الأكاديمي والتقني بحماس في بيئة تفاعلية دافئة",
+      "category": "hero_and_landing"
+    },
+    "community_circle_discussion": {
+      "url": "https://images.unsplash.com/photo-1741241858332-83de91895bab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzF8MHwxfHNlYXJjaHwyfHx1bml2ZXJzaXR5JTIwc3R1ZGVudHMlMjBhcmFiJTIwd29tZW4lMjBzdHVkeWluZ3xlbnwwfHx8fDE3ODkwMjI1MjN8MA&ixlib=rb-4.1.0&q=85",
+      "description": "فريق النادي في حوار ونقاش حول الفعاليات القادمة وورش العمل التخصصية",
+      "category": "workshops_and_events"
+    },
+    "student_celebration_success": {
+      "url": "https://images.unsplash.com/photo-1608453162650-cba45689c284?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzF8MHwxfHNlYXJjaHwxfHx1bml2ZXJzaXR5JTIwc3R1ZGVudHMlMjBhcmFiJTIwd29tZW4lMjBzdHVkeWluZ3xlbnwwfHx8fDE3ODkwMjI1MjN8MA&ixlib=rb-4.1.0&q=85",
+      "description": "طالبة متميزة في رحاب الجامعة تشع بهجة وطاقة إنجاز وتفوق",
+      "category": "achievements_and_points"
+    },
+    "creative_workshop_table": {
+      "url": "https://images.unsplash.com/photo-1769034432267-0fd4a01d839f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzF8MHwxfHNlYXJjaHw0fHx1bml2ZXJzaXR5JTIwc3R1ZGVudHMlMjBhcmFiJTIwd29tZW4lMjBzdHVkeWluZ3xlbnwwfHx8fDE3ODkwMjI1MjN8MA&ixlib=rb-4.1.0&q=85",
+      "description": "ورشة تدريبية ومخططات عمل مشتركة بإشراف المشرفات الأكاديميات",
+      "category": "supervisor_workshops"
+    },
+    "academic_journal_aesthetic": {
+      "url": "https://images.unsplash.com/photo-1772408186777-7bbc603c4fb3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHwxfHxhZXN0aGV0aWMlMjBzdGF0aW9uZXJ5JTIwd2FybSUyMGRlc2slMjBub3RlYm9va3xlbnwwfHx8fDE3ODkwMjI1NDB8MA&ixlib=rb-4.1.0&q=85",
+      "description": "دفتر ملاحظات جلدي فاخر مع لمسات ذهبية يعكس التوثيق الأكاديمي والتميز",
+      "category": "profile_and_announcements"
+    }
+  },
+  "role_matrix": {
+    "student": {
+      "role_id": "student",
+      "title_ar": "طالبة (عضوة النادي)",
+      "badge_color": "bg-[#F9ECEE] text-[#B35B62] border-[#E8C5CB]",
+      "dashboard_sections": [
+        "بطاقة الطالبة والهوية الجامعية (الاسم، التخصص، السنة، رصيد نقاط مصباح، شارة المستوى)",
+        "فعالياتي المسجلة (حالة الحضور، تذكرة الباركود QR، تأكيد الحضور ونيل النقاط)",
+        "الورش المتاحة مع نخبة الدكاترة (فيديو، ملفات PDF، رابط الجلسة المباشرة)",
+        "سجل الإنجازات والأوسمة (وسام الحضور، وسام المبادرة، وسام الإتقان)",
+        "لوحة الإعلانات وتحديثات إدارة النادي"
+      ]
+    },
+    "supervisor": {
+      "role_id": "supervisor",
+      "title_ar": "مشرفة / دكتورة أكاديمية",
+      "badge_color": "bg-[#FEF7E6] text-[#B87D1B] border-[#F1DCB0]",
+      "dashboard_sections": [
+        "إدارة ورش العمل التخصصية (إضافة ورشة، رفع مادة PDF، إدراج رابط فيديو/محاضرة)",
+        "جدولة الجلسات وتحديد السعة والمواعيد",
+        "قائمة الطالبات المسجلات في الورشة ومتابعة التفاعل والتقييمات",
+        "نشر تنويهات وتوصيات خاصة بالطالبات في الورشة"
+      ]
+    },
+    "admin": {
+      "role_id": "admin",
+      "title_ar": "إدارة النادي (رئيسة / مسؤولة)",
+      "badge_color": "bg-[#EBF6F0] text-[#2D6A4F] border-[#B7DFCB]",
+      "dashboard_sections": [
+        "مركز التحكم والمؤشرات الشاملة (عدد العضوات، الفعاليات النشطة، مجموع النقاط الممنوحة، نسبة الإقبال)",
+        "إدارة العضويات وقبول الطالبات الجدد (مراجعة البريد الجامعي والموافقة/الرفض)",
+        "إدارة الفعاليات والأنشطة (إنشاء، تعديل، إغلاق التسجيل، تحديد السعة والقاعات)",
+        "نظام النقاط ومنح الجوائز التلقائي أو اليدوي عند مسح الحضور",
+        "إرسال إعلانات وتعاميم فورية لكافة عضوات النادي",
+        "تصدير التقارير والإحصائيات"
+      ]
+    }
+  },
+  "screens_and_components": {
+    "header_nav": {
+      "surface": "Crystal glass with warm tint: backdrop-blur-xl bg-[#FDFBF7]/85 border-b border-[#EAE2D5] sticky top-0 z-50",
+      "elements": [
+        "شعار نادي مصباح مع أيقونة الفانوس المضيء الذهبي وعبارة 'نادي مصباح الطلابي'",
+        "روابط التصفح السريع: الرئيسية، الفعاليات، ورش الدكاترة، الإعلانات، لوحة الشرف للنقاط",
+        "مبدّل الأدوار السريع التجريبي (طالبة / مشرفة ودكتورة / مديرة النادي) لتسهيل فحص وتجربة كامل مميزات التطبيق",
+        "زر تسجيل الدخول / الملف الشخصي وحالة الإشعارات التفاعلية"
+      ]
+    },
+    "auth_modal_or_page": {
+      "type": "University Email + OTP verification flow (RTL)",
+      "features": [
+        "إدخال البريد الجامعي الأكاديمي (مثال: student@university.edu.sa)",
+        "شاشة إدخال رمز التحقق OTP مكون من 6 خانات مع عداد تنازلي لإعادة الإرسال",
+        "اختيار الدور في حال التسجيل الجديد أو توجيه تلقائي بحسب الصلاحيات",
+        "تنبيهات فورية وجميلة عبر sonner"
+      ]
+    },
+    "events_hub": {
+      "surface": "بطاقات بيضاء محفوفة بإطار بيج دافئ (#EAE2D5) مع ظلال ناعمة وتأثير hover خفيف",
+      "features": [
+        "فلترة الفعاليات (الكل، القادمة، ورش عمل، ندوات، لقاءات ترفيهية، بطولات)",
+        "عداد السعة والمقاعد الشاغرة (مثال: باقي 14 مقعد من أصل 60)",
+        "زر التسجيل الفوري مع تأكيد فوري ومنح بطاقة اشتراك تفاعلية",
+        "مساحة النقاش والتعليقات الخاصة بكل فعالية",
+        "تاريخ ووقت الفعالية وموقع القاعة أو رابط البث"
+      ]
+    },
+    "workshops_vault": {
+      "features": [
+        "عرض الورش التخصصية بإشراف الدكاترة",
+        "مشغل فيديو مدمج وعارض ملفات PDF وروابط المصادر الأكاديمية الإثرائية",
+        "معلومات الدكتورة المشرفة (اللقب، الكلية، نبذة)",
+        "إمكانية تنزيل المحتوى والتفاعل بالأسئلة"
+      ]
+    },
+    "points_achievements_system": {
+      "gamification_details": [
+        "رصيد النقاط الذكي (100 نقطة لكل حضور، 50 نقطة لكل ورشة، 200 نقطة للتميز التنظيمي)",
+        "مستويات العضوية: سراج مبتدئ (0-200) -> قنديل متألق (201-600) -> مصباح ذهبي (601+)",
+        "أوسمة رقمية مع تفاصيل تاريخ الحصول عليها",
+        "لوحة شرف متجددة لأكثر الطالبات تفاعلاً في الفصل الدراسي"
+      ]
+    },
+    "announcements_board": {
+      "features": [
+        "تعاميم إدارية عاجلة مع وسوم ملونة (عاجل، هام، فرصة تطوعية، تهنئة)",
+        "تنبيهات فورية للمشتركات مع زر تفاعل وقراءة المزيد"
+      ]
+    }
+  },
+  "interactive_guidelines": {
+    "test_ids_rule": "Every button, input, tab, card, and actionable item MUST have a kebab-case data-testid attribute in English (e.g., data-testid='login-email-input', data-testid='event-register-button', data-testid='role-switcher-student').",
+    "toast_notification": "Use sonner for all notifications in Arabic (e.g. 'تم التسجيل في الفعالية بنجاح!', 'تم إرسال رمز التحقق إلى بريدك الجامعي').",
+    "rtl_direction": "HTML element or App root must specify dir='rtl' and lang='ar'. Flex and grid alignments must respect start/end without forcing left/right.",
+    "mock_data_readiness": "Provide realistic Saudi/Arab university student names, authentic academic courses (Computer Science, Business Administration, Design, Health Sciences), real workshop titles, and active events so the app feels 100% alive out of the box."
+  },
+  "instructions_to_main_agent": [
+    "1. RTL & Arabic First: Ensure document or main container has dir='rtl' and class font-['Tajawal']. Import Google fonts ('Tajawal', 'El_Messiri', 'IBM_Plex_Sans_Arabic') in public/index.html or src/index.css.",
+    "2. Role-Switcher for Seamless Evaluation: Include a prominent, elegant role-switch toolbar (e.g. 'تبديل المشهد: طالبة | مشرفة أكاديمية | إدارة النادي') so the evaluator can test all 3 customized dashboards without logging out.",
+    "3. Full MVP Flow: Implement the University Email + OTP login modal, Student Dashboard with My Events & Points, Event Registration with Capacity counter & Comments, Workshop Repository with PDF/Video preview, News Board, and Admin Dashboard with member approvals & events CRUD.",
+    "4. Warm Feminine Aesthetic: Strictly use the warm feminine palette (#FDFBF7 background, #F7F2EB sand surfaces, #C86D74 terracotta rose, #D99B26 desert gold, #1E1815 deep espresso). Avoid cold purples (#7351B7 is forbidden).",
+    "5. Mobile-First & Tap-Friendly: All cards, action buttons, and nav items must look flawless on 375px mobile screens as well as 1440px desktop screens. Use bottom navigation or sticky header on mobile.",
+    "6. Rigorous data-testid: Add explicit data-testid attributes to all buttons, tabs, inputs, modal triggers, and role selectors for resilient automated testing."
+  ]
+}
